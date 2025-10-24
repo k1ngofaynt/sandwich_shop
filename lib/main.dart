@@ -28,7 +28,22 @@ class OrderItemDisplay extends StatelessWidget {
 
   @override
 Widget build(BuildContext context) {
-  return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
+  return Container(
+    constraints: BoxConstraints(
+      maxHeight: Theme.of(context).textTheme.headlineMedium!.fontSize! * 1.1 + 200.0,
+    ),
+     margin: const EdgeInsets.symmetric(horizontal: 20.0),
+    padding: const EdgeInsets.all(8.0),
+    color: Colors.blue[600],
+    alignment: Alignment.center,
+    child: Text(
+      '$quantity $itemType sandwich(es): ${List.filled(quantity, '🥪').join()}',
+      style: Theme.of(context)
+          .textTheme
+          .headlineMedium!
+          .copyWith(color: Colors.black, fontSize: 20.0),
+    ),
+  );
 }
 }
 
