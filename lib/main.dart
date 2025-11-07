@@ -43,16 +43,24 @@ int _quantity = 0;
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () => setState(() {
-                    if (_quantity < widget.maxQuantity) _quantity++;
-                  }),
-                  child: const Text('Add'),
-                ),
+    ElevatedButton(
+      onPressed: () => setState(() {
+        if (_quantity < widget.maxQuantity) _quantity++;
+      }),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+      ),
+      child: const Text('Add'),
+    ),
                 ElevatedButton(
                   onPressed: () => setState(() {
                     if (_quantity > 0) _quantity--;
                   }),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
                   child: const Text('Remove'),
                 ),
               ],
