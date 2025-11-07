@@ -6,20 +6,29 @@ void main() { runApp(const App());
 class App extends StatelessWidget {
   const App({super.key});
 
- 
   @override
-Widget build(BuildContext context) {
-  return MaterialApp(
-    title: 'Sandwich Shop App',
-    home: Scaffold(
-      appBar: AppBar(title: const Text('Sandwich Counter')),
-      body: const Center(
-        child: OrderItemDisplay(5, 'Footlong'),
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sandwich Shop App',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Sandwich Counter')),
+        body: Container(
+          color: Colors.blue[600],
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              OrderItemDisplay(2, 'BLT'),
+              OrderItemDisplay(3, 'Club'),
+              OrderItemDisplay(1, 'Veggie'),
+            ],
+          ),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-}
+
 class OrderItemDisplay extends StatelessWidget {
   final String itemType;
   final int quantity;
@@ -34,7 +43,7 @@ Widget build(BuildContext context) {
     ),
      margin: const EdgeInsets.symmetric(horizontal: 20.0),
     padding: const EdgeInsets.all(8.0),
-    color: Colors.blue[600],
+    //color: Colors.blue[600],
     alignment: Alignment.center,
     child: Text(
       '$quantity $itemType sandwich(es): ${List.filled(quantity, '🥪').join()}',
