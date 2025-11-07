@@ -15,9 +15,11 @@ class App extends StatelessWidget {
   }
 }
 class OrderScreen extends StatefulWidget {
+  
   final int maxQuantity;
 
   const OrderScreen({super.key, this.maxQuantity = 10});
+  
 
   @override
   State<OrderScreen> createState() => _OrderScreenState();
@@ -25,6 +27,7 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
 int _quantity = 0;
+String _sandwichSize = 'Footlong';
 
 @override
   Widget build(BuildContext context) {
@@ -38,8 +41,29 @@ int _quantity = 0;
           children: <Widget>[
             OrderItemDisplay(
               _quantity,
-              'Footlong',
+              _sandwichSize, // Use the state variable
             ),
+            const SizedBox(height: 20),
+            // Sandwich size selector
+            SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(
+                  value: 'Six-inch',
+                  label: Text('Six-inch'),
+                ),
+                ButtonSegment(
+                  value: 'Footlong',
+                  label: Text('Footlong'),
+                ),
+              ],
+              selected: {_sandwichSize},
+              onSelectionChanged: (Set<String> newSelection) {
+                setState(() {
+                  _sandwichSize = newSelection.first;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
