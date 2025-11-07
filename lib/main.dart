@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-void main() { runApp(const App());
+void main() {
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -14,27 +15,24 @@ class App extends StatelessWidget {
     );
   }
 }
+
 class OrderScreen extends StatefulWidget {
-  
   final int maxQuantity;
 
   const OrderScreen({super.key, this.maxQuantity = 10});
-  
 
   @override
   State<OrderScreen> createState() => _OrderScreenState();
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-int _quantity = 0;
-String _sandwichSize = 'Footlong';
+  int _quantity = 0;
+  String _sandwichSize = 'Footlong';
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sandwich Counter'),
-      ),
+      appBar: AppBar(title: const Text('Sandwich Counter')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,14 +45,8 @@ String _sandwichSize = 'Footlong';
             // Sandwich size selector
             SegmentedButton<String>(
               segments: const [
-                ButtonSegment(
-                  value: 'Six-inch',
-                  label: Text('Six-inch'),
-                ),
-                ButtonSegment(
-                  value: 'Footlong',
-                  label: Text('Footlong'),
-                ),
+                ButtonSegment(value: 'Six-inch', label: Text('Six-inch')),
+                ButtonSegment(value: 'Footlong', label: Text('Footlong')),
               ],
               selected: {_sandwichSize},
               onSelectionChanged: (Set<String> newSelection) {
@@ -67,23 +59,23 @@ String _sandwichSize = 'Footlong';
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-    ElevatedButton(
-      onPressed: _quantity < widget.maxQuantity
-                      ? () => setState(() {
-                            _quantity++;
-                          })
-                      : null,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-      ),
-      child: const Text('Add'),
-    ),
                 ElevatedButton(
-                 onPressed: _quantity > 0
+                  onPressed: _quantity < widget.maxQuantity
                       ? () => setState(() {
-                            _quantity--;
-                          })
+                          _quantity++;
+                        })
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Add'),
+                ),
+                ElevatedButton(
+                  onPressed: _quantity > 0
+                      ? () => setState(() {
+                          _quantity--;
+                        })
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
@@ -107,24 +99,25 @@ class OrderItemDisplay extends StatelessWidget {
   const OrderItemDisplay(this.quantity, this.itemType, {super.key});
 
   @override
-Widget build(BuildContext context) {
-  return Container(
-    constraints: BoxConstraints(
-      maxHeight: Theme.of(context).textTheme.headlineMedium!.fontSize! * 1.1 + 200.0,
-    ),
-     margin: const EdgeInsets.symmetric(horizontal: 20.0),
-    padding: const EdgeInsets.all(8.0),
-    //color: Colors.blue[600],
-    alignment: Alignment.center,
-    child: Text(
-      '$quantity $itemType sandwich(es): ${List.filled(quantity, '🥪').join()}',
-      style: Theme.of(context)
-          .textTheme
-          .headlineMedium!
-          .copyWith(color: Colors.black, fontSize: 20.0),
-    ),
-  );
-}
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight:
+            Theme.of(context).textTheme.headlineMedium!.fontSize! * 1.1 + 200.0,
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.all(8.0),
+      //color: Colors.blue[600],
+      alignment: Alignment.center,
+      child: Text(
+        '$quantity $itemType sandwich(es): ${List.filled(quantity, '🥪').join()}',
+        style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+          color: Colors.black,
+          fontSize: 20.0,
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -151,7 +144,9 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(236, 255, 153, 0)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(236, 255, 153, 0),
+        ),
       ),
       home: const MyHomePage(title: 'My Sandwich Shop'),
     );
@@ -177,7 +172,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
