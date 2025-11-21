@@ -193,7 +193,6 @@ class OrderRepository {
     if (canDecrement) quantity--;
   }
 }
-
 class StyledButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconData icon;
