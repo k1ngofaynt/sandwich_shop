@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'views/app_styles.dart';
+import 'repositories/pricing_repository.dart';
 
 void main() {
   runApp(const App());
@@ -29,6 +30,7 @@ class OrderScreen extends StatefulWidget {
 }
 class _OrderScreenState extends State<OrderScreen> {
   late final OrderRepository _orderRepository;
+  late final PricingRepository _pricingRepository;
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   BreadType _selectedBreadType = BreadType.white;
@@ -38,6 +40,7 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     _orderRepository = OrderRepository(maxQuantity: widget.maxQuantity);
+    _pricingRepository = const PricingRepository();
     _notesController.addListener(() {
       setState(() {});
     });
@@ -99,6 +102,11 @@ class _OrderScreenState extends State<OrderScreen> {
       noteForDisplay = _notesController.text;
     }
 
+    final totalPrice = _pricingRepository.calculateTotal(
+      quantity: _orderRepository.quantity,
+      isFootlong: _isFootlong,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -115,6 +123,11 @@ class _OrderScreenState extends State<OrderScreen> {
               itemType: sandwichType,
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Total price: £${totalPrice.toStringAsFixed(2)}',
+              style: normalText,
             ),
             const SizedBox(height: 20),
             Row(
