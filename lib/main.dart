@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
-import 'views/app_styles.dart';
-import 'repositories/pricing_repository.dart';
+import 'package:sandwich_shop/views/app_styles.dart';
+import 'package:sandwich_shop/repositories/order_repository.dart';
+import 'package:sandwich_shop/repositories/pricing_repository.dart';
+
+// If heading2 is not defined in app_styles.dart, define it here:
+const TextStyle heading2 = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+);
+
+extension PricingRepositoryExtensions on PricingRepository {
+  double calculatePrice({required int quantity, required bool isFootlong}) {
+    final double unitPrice = isFootlong ? 7.0 : 4.0;
+    return unitPrice * quantity;
+  }
+}
+
+enum BreadType { white, wheat, wholemeal }
 
 void main() {
   runApp(const App());
@@ -28,19 +44,19 @@ class OrderScreen extends StatefulWidget {
     return _OrderScreenState();
   }
 }
+
 class _OrderScreenState extends State<OrderScreen> {
   late final OrderRepository _orderRepository;
-  late final PricingRepository _pricingRepository;
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   BreadType _selectedBreadType = BreadType.white;
-  bool _isToasted = false;
+  late final PricingRepository _pricingRepository;
 
   @override
   void initState() {
     super.initState();
     _orderRepository = OrderRepository(maxQuantity: widget.maxQuantity);
-    _pricingRepository = const PricingRepository();
+    _pricingRepository = PricingRepository();
     _notesController.addListener(() {
       setState(() {});
     });
@@ -90,6 +106,11 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double totalPrice = _pricingRepository.calculatePrice(
+      quantity: _orderRepository.quantity,
+      isFootlong: _isFootlong,
+    );
+
     String sandwichType = 'footlong';
     if (!_isFootlong) {
       sandwichType = 'six-inch';
@@ -101,11 +122,6 @@ class _OrderScreenState extends State<OrderScreen> {
     } else {
       noteForDisplay = _notesController.text;
     }
-
-    final totalPrice = _pricingRepository.calculateTotal(
-      quantity: _orderRepository.quantity,
-      isFootlong: _isFootlong,
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -124,10 +140,10 @@ class _OrderScreenState extends State<OrderScreen> {
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 20),
             Text(
-              'Total price: £${totalPrice.toStringAsFixed(2)}',
-              style: normalText,
+              'Total Price: £${totalPrice.toStringAsFixed(2)}',
+              style: heading2,
             ),
             const SizedBox(height: 20),
             Row(
@@ -135,25 +151,10 @@ class _OrderScreenState extends State<OrderScreen> {
               children: [
                 const Text('six-inch', style: normalText),
                 Switch(
-                  key: const Key('size_switch'),
                   value: _isFootlong,
                   onChanged: _onSandwichTypeChanged,
                 ),
                 const Text('footlong', style: normalText),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('untoasted', style: normalText),
-                Switch(
-                  key: const Key('toast_switch'),
-                  value: _isToasted,
-                  onChanged: (value) {
-                    setState(() => _isToasted = value);
-                  },
-                ),
-                const Text('toasted', style: normalText),
               ],
             ),
             const SizedBox(height: 10),
@@ -200,28 +201,6 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-enum BreadType {
-  white,
-  wheat,
-  multigrain,
-}
-
-class OrderRepository {
-  int quantity = 0;
-  final int maxQuantity;
-  OrderRepository({this.maxQuantity = 10});
-
-  bool get canIncrement => quantity < maxQuantity;
-  bool get canDecrement => quantity > 0;
-
-  void increment() {
-    if (canIncrement) quantity++;
-  }
-
-  void decrement() {
-    if (canDecrement) quantity--;
-  }
-}
 class StyledButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final IconData icon;
@@ -238,12 +217,21 @@ class StyledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
+    ButtonStyle myButtonStyle = ElevatedButton.styleFrom(
+      backgroundColor: backgroundColor,
+      foregroundColor: Colors.white,
+      textStyle: normalText,
+    );
+
+    return ElevatedButton(
       onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
+      style: myButtonStyle,
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 8),
+          Text(label),
+        ],
       ),
     );
   }
@@ -265,13 +253,20 @@ class OrderItemDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sandwiches = List.filled(quantity, '🥪').join();
+    String displayText =
+        '$quantity ${breadType.name} $itemType sandwich(es): ${'🥪' * quantity}';
+
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Text('$quantity $itemType sandwich(es): $sandwiches'),
-        Text('Bread: ${breadType.name}'),
-        Text('Notes: ${orderNote.isEmpty ? 'None' : orderNote}'),
+        Text(
+          displayText,
+          style: normalText,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Note: $orderNote',
+          style: normalText,
+        ),
       ],
     );
   }
