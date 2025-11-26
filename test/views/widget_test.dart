@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sandwich_shop/main.dart';
 
+
 void main() {
   group('App widget', () {
     testWidgets('App sets OrderScreen as home', (WidgetTester tester) async {
@@ -87,27 +88,33 @@ void main() {
   });
 
   group('Group of tests for the OrderItemDisplay widget', () {
-    // Check the OrderItemDisplay widgets in isolation.
     testWidgets('Displays the correct text for 0 sandwiches',
         (WidgetTester tester) async {
-          const widgetToBeTested = OrderItemDisplay(
-            quantity: 0, itemType: 'footlong', breadType: BreadType.white, orderNote: '');
-      const testApp = MaterialApp(
+      final widgetToBeTested = OrderItemDisplay(
+          quantity: 0,
+          itemType: 'footlong',
+          breadType: BreadType.white,
+          orderNote: '');
+      final testApp = MaterialApp(
         home: Scaffold(body: widgetToBeTested),
       );
       // Build the OrderItemDisplay widget to be tested.
-        await tester.pumpWidget(testApp);
-        expect(find.text('0 footlong sandwich(es): '), findsOneWidget);
+      await tester.pumpWidget(testApp);
+      expect(find.text('0 footlong sandwich(es): '), findsOneWidget);
     });
+
     testWidgets('Displays the correct text and emoji for 3 sandwiches',
         (WidgetTester tester) async {
-          const widgetToBeTested = OrderItemDisplay(
-            quantity: 3, itemType: 'footlong', breadType: BreadType.white, orderNote: '');
-      const testApp = MaterialApp(
+      final widgetToBeTested = OrderItemDisplay(
+          quantity: 3,
+          itemType: 'footlong',
+          breadType: BreadType.white,
+          orderNote: '');
+      final testApp = MaterialApp(
         home: Scaffold(body: widgetToBeTested),
       );
       await tester.pumpWidget(testApp);
-        expect(find.text('3 footlong sandwich(es): 🥪🥪🥪'), findsOneWidget);
+      expect(find.text('3 footlong sandwich(es): 🥪🥪🥪'), findsOneWidget);
     });
   });
 }

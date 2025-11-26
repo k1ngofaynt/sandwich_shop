@@ -2,5 +2,6 @@
     "git.enabled": true,
     "cSpell.words": [
         "footlong"
-    ]
+    ],
+    "java.project.sourcePaths": []
 }
