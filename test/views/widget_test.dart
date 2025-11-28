@@ -100,6 +100,30 @@ void main() {
       expect(find.widgetWithText(ElevatedButton, 'Add to Cart'), findsOneWidget);
     });
 
+    testWidgets('Shows SnackBar confirmation after adding to cart',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+      await tester.pumpAndSettle();
+      
+      // Scroll to make the Add to Cart button visible
+      final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
+      await tester.ensureVisible(addToCartButton);
+      await tester.pumpAndSettle();
+      
+      // Tap Add to Cart button
+      await tester.tap(addToCartButton);
+      await tester.pump(); // Start the SnackBar animation
+      
+      // Verify SnackBar appears with confirmation message
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.text('Added 1 footlong Veggie Delight sandwich(es) on white bread to cart'), findsOneWidget);
+      
+      // Verify SnackBar properties
+      final SnackBar snackBar = tester.widget(find.byType(SnackBar));
+      expect(snackBar.duration, equals(const Duration(seconds: 2)));
+      expect(snackBar.behavior, equals(SnackBarBehavior.floating));
+    });
+
     testWidgets('Toggling the switch changes sandwich size',
         (WidgetTester tester) async {
       await tester.pumpWidget(const App());
