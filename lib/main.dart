@@ -9,7 +9,7 @@ const TextStyle heading2 = TextStyle(
 );
 
 double calculatePrice({required int quantity, required bool isFootlong}) {
-  final double unitPrice = isFootlong ? 7.0 : 4.0;
+  final double unitPrice = isFootlong ? 11.0 : 7.0;
   return unitPrice * quantity;
 }
 
@@ -254,6 +254,17 @@ class _OrderScreenState extends State<OrderScreen> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: Text(
+                  'Price: \$${calculatePrice(quantity: _quantity, isFootlong: _isFootlong).toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               StyledButton(

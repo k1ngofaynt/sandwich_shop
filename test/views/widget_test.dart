@@ -86,14 +86,20 @@ void main() {
     testWidgets('Tapping Add to Cart adds item to cart',
         (WidgetTester tester) async {
       await tester.pumpWidget(const App());
+      await tester.pumpAndSettle();
       
       // Set quantity to 2
-      await tester.tap(find.byIcon(Icons.add));
-      await tester.pump();
+      final addIcon = find.byIcon(Icons.add).last;
+      await tester.ensureVisible(addIcon);
+      await tester.tap(addIcon);
+      await tester.pumpAndSettle();
       
       // Tap Add to Cart
-      await tester.tap(find.widgetWithText(ElevatedButton, 'Add to Cart'));
-      await tester.pump();
+      final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
+      await tester.ensureVisible(addToCartButton);
+      await tester.pumpAndSettle();
+      await tester.tap(addToCartButton);
+      await tester.pumpAndSettle();
       
       // We can't directly verify cart contents without exposing it,
       // but we can verify the button was tapped without error
@@ -105,12 +111,10 @@ void main() {
       await tester.pumpWidget(const App());
       await tester.pumpAndSettle();
       
-      // Scroll to make the Add to Cart button visible
+      // Tap Add to Cart button
       final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
       await tester.ensureVisible(addToCartButton);
       await tester.pumpAndSettle();
-      
-      // Tap Add to Cart button
       await tester.tap(addToCartButton);
       await tester.pump(); // Start the SnackBar animation
       
@@ -159,7 +163,7 @@ void main() {
       await tester.pumpWidget(const App());
       await tester.pumpAndSettle();
       
-      // Scroll to and tap Add to Cart button
+      // Tap Add to Cart button
       final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
       await tester.ensureVisible(addToCartButton);
       await tester.pumpAndSettle();
@@ -177,13 +181,13 @@ void main() {
       await tester.pumpAndSettle();
       
       // Increase quantity to 3
-      final addQuantityButton = find.byIcon(Icons.add);
-      await tester.ensureVisible(addQuantityButton.last);
+      final addQuantityButton = find.byIcon(Icons.add).last;
+      await tester.ensureVisible(addQuantityButton);
       await tester.pumpAndSettle();
-      await tester.tap(addQuantityButton.last);
-      await tester.pump();
-      await tester.tap(addQuantityButton.last);
-      await tester.pump();
+      await tester.tap(addQuantityButton);
+      await tester.pumpAndSettle();
+      await tester.tap(addQuantityButton);
+      await tester.pumpAndSettle();
       
       // Add to cart (3 footlongs = $33.00)
       final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
@@ -203,16 +207,18 @@ void main() {
       await tester.pumpAndSettle();
       
       final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
-      await tester.ensureVisible(addToCartButton);
-      await tester.pumpAndSettle();
       
       // Add 1 footlong ($11.00)
+      await tester.ensureVisible(addToCartButton);
+      await tester.pumpAndSettle();
       await tester.tap(addToCartButton);
       await tester.pumpAndSettle();
       expect(find.text('Items: 1'), findsOneWidget);
       expect(find.text('Total: \$11.00'), findsOneWidget);
       
       // Add another 1 footlong ($11.00) - total should be $22.00
+      await tester.ensureVisible(addToCartButton);
+      await tester.pumpAndSettle();
       await tester.tap(addToCartButton);
       await tester.pumpAndSettle();
       expect(find.text('Items: 2'), findsOneWidget);
@@ -225,8 +231,11 @@ void main() {
       await tester.pumpAndSettle();
       
       // Toggle switch to six-inch
-      await tester.tap(find.byType(Switch));
-      await tester.pump();
+      final switchFinder = find.byType(Switch);
+      await tester.ensureVisible(switchFinder);
+      await tester.pumpAndSettle();
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
       
       // Add to cart (1 six-inch = $7.00)
       final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
@@ -246,20 +255,19 @@ void main() {
       await tester.pumpAndSettle();
       
       final addToCartButton = find.widgetWithText(ElevatedButton, 'Add to Cart');
-      await tester.ensureVisible(addToCartButton);
-      await tester.pumpAndSettle();
       
       // Add 1 footlong ($11.00)
+      await tester.ensureVisible(addToCartButton);
+      await tester.pumpAndSettle();
       await tester.tap(addToCartButton);
       await tester.pumpAndSettle();
       
-      // Scroll up to see the switch
-      await tester.drag(find.byType(SingleChildScrollView), const Offset(0, 300));
-      await tester.pumpAndSettle();
-      
       // Toggle to six-inch
-      await tester.tap(find.byType(Switch));
-      await tester.pump();
+      final switchFinder = find.byType(Switch);
+      await tester.ensureVisible(switchFinder);
+      await tester.pumpAndSettle();
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
       
       // Add 1 six-inch ($7.00) - total should be $18.00
       await tester.ensureVisible(addToCartButton);
