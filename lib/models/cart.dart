@@ -14,4 +14,17 @@ class Cart {
   }
 
   Map<Sandwich, int> get items => Map.unmodifiable(_items);
+
+  int get totalItems {
+    return _items.values.fold(0, (sum, quantity) => sum + quantity);
+  }
+
+  double calculateTotalPrice() {
+    double total = 0.0;
+    _items.forEach((sandwich, quantity) {
+      final pricePerSandwich = sandwich.isFootlong ? 11.0 : 7.0;
+      total += pricePerSandwich * quantity;
+    });
+    return total;
+  }
 }
