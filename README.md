@@ -1,4 +1,3 @@
-
 **Sandwich Shop**
 
 - **Description:** A small Flutter app that demonstrates an order counter and a minimal sandwich-ordering UI. Users can pick sandwich size (six-inch or footlong), select a bread type, add a short order note, and increase/decrease the order quantity with a configurable maximum.
@@ -21,7 +20,6 @@
 - An emulator or a connected device. For iOS simulators you need Xcode (macOS only).
 
 1) Verify Flutter is installed:
-
 ```bash
 flutter --version
 ```
