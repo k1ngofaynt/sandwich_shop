@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sandwich_shop/main.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
+import 'package:sandwich_shop/models/cart_item.dart';
 
 void main() {
   group('App widget', () {
@@ -328,6 +329,218 @@ void main() {
       
       await tester.pumpWidget(testApp);
       expect(find.text('Note: no onions'), findsOneWidget);
+    });
+  });
+
+  group('CartItem model tests', () {
+    test('CartItem initializes with correct values', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      expect(cartItem.id, equals('1'));
+      expect(cartItem.sandwichName, equals('Veggie Delight'));
+      expect(cartItem.price, equals(11.00));
+      expect(cartItem.quantity, equals(2));
+    });
+
+    test('CartItem defaults to quantity 1 when not specified', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+      );
+
+      expect(cartItem.quantity, equals(1));
+    });
+
+    test('CartItem enforces minimum quantity of 1', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 0,
+      );
+
+      expect(cartItem.quantity, equals(1));
+    });
+
+    test('CartItem enforces maximum quantity of 5', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 10,
+      );
+
+      expect(cartItem.quantity, equals(5));
+    });
+
+    test('CartItem calculates subtotal correctly', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 3,
+      );
+
+      expect(cartItem.subtotal, equals(33.00));
+    });
+
+    test('CartItem subtotal updates when quantity changes', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 7.00,
+        quantity: 2,
+      );
+
+      expect(cartItem.subtotal, equals(14.00));
+
+      cartItem.quantity = 4;
+      expect(cartItem.subtotal, equals(28.00));
+    });
+
+    test('canIncrease returns true when quantity is less than max', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 3,
+      );
+
+      expect(cartItem.canIncrease, isTrue);
+    });
+
+    test('canIncrease returns false when quantity equals max', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 5,
+      );
+
+      expect(cartItem.canIncrease, isFalse);
+    });
+
+    test('canDecrease returns true when quantity is greater than min', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 3,
+      );
+
+      expect(cartItem.canDecrease, isTrue);
+    });
+
+    test('canDecrease returns false when quantity equals min', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 1,
+      );
+
+      expect(cartItem.canDecrease, isFalse);
+    });
+
+    test('copyWith creates a new instance with updated values', () {
+      final original = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      final copy = original.copyWith(quantity: 4);
+
+      expect(copy.id, equals('1'));
+      expect(copy.sandwichName, equals('Veggie Delight'));
+      expect(copy.price, equals(11.00));
+      expect(copy.quantity, equals(4));
+      expect(original.quantity, equals(2)); // Original unchanged
+    });
+
+    test('copyWith with no parameters returns identical copy', () {
+      final original = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      final copy = original.copyWith();
+
+      expect(copy.id, equals(original.id));
+      expect(copy.sandwichName, equals(original.sandwichName));
+      expect(copy.price, equals(original.price));
+      expect(copy.quantity, equals(original.quantity));
+    });
+
+    test('CartItems with same id are equal', () {
+      final item1 = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      final item2 = CartItem(
+        id: '1',
+        sandwichName: 'Different Name',
+        price: 7.00,
+        quantity: 5,
+      );
+
+      expect(item1, equals(item2));
+      expect(item1.hashCode, equals(item2.hashCode));
+    });
+
+    test('CartItems with different ids are not equal', () {
+      final item1 = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      final item2 = CartItem(
+        id: '2',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      expect(item1, isNot(equals(item2)));
+    });
+
+    test('toString returns formatted string with all details', () {
+      final cartItem = CartItem(
+        id: '1',
+        sandwichName: 'Veggie Delight',
+        price: 11.00,
+        quantity: 2,
+      );
+
+      final result = cartItem.toString();
+
+      expect(result, contains('id: 1'));
+      expect(result, contains('sandwich: Veggie Delight'));
+      expect(result, contains('price: \$11.00'));
+      expect(result, contains('quantity: 2'));
+      expect(result, contains('subtotal: \$22.00'));
+    });
+
+    test('maxQuantity constant is 5', () {
+      expect(CartItem.maxQuantity, equals(5));
+    });
+
+    test('minQuantity constant is 1', () {
+      expect(CartItem.minQuantity, equals(1));
     });
   });
 }
